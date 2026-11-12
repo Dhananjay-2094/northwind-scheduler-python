@@ -10,31 +10,19 @@ import os
 import sys
 
 from scheduler.agent import SchedulingAgent
-from scheduler.model import FakeModel, final, tool_call
+from scheduler.demo_model import DemoModel
 from scheduler.store import Store
-
-
-def demo_model() -> FakeModel:
-    return FakeModel([
-        tool_call(
-            "find_free_slots",
-            attendees=["priya", "sam"],
-            date="2026-11-03",
-            duration_minutes=60,
-            earliest="12:00",
-        ),
-        final("Priya and Sam are both free on Tuesday Nov 3 from 13:00 to 14:00."),
-    ])
 
 
 def main() -> None:
     request = " ".join(sys.argv[1:]) or "Find an hour for Priya and Sam on Tuesday afternoon"
+    store = Store.load()
     if os.environ.get("LLM_BASE_URL") and os.environ.get("LLM_MODEL"):
         from scheduler.real_model import OpenAICompatibleModel
         model = OpenAICompatibleModel()
     else:
-        model = demo_model()
-    agent = SchedulingAgent(model, Store.load())
+        model = DemoModel(store.people)
+    agent = SchedulingAgent(model, store)
     print(agent.run(request))
 
 

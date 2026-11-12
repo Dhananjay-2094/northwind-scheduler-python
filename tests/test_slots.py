@@ -33,3 +33,8 @@ def test_combine_availability():
 def test_find_free_windows():
     free = [False, True, True, True, False, True] + [False] * 10
     assert find_free_windows(free, 2) == [1, 2]
+
+
+def test_find_free_windows_includes_window_ending_at_bound():
+    free = [True] * 16
+    assert find_free_windows(free, 2, start_slot=0, end_slot=6) == [0, 1, 2, 3, 4]

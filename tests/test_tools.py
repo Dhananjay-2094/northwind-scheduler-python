@@ -22,6 +22,7 @@ def test_find_free_slots_for_two_people_in_the_afternoon():
         {"start": "13:30", "end": "14:00"},
         {"start": "15:00", "end": "15:30"},
         {"start": "16:00", "end": "16:30"},
+        {"start": "16:30", "end": "17:00"},
     ]
 
 
