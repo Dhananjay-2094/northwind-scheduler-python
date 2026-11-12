@@ -45,6 +45,13 @@ API access. Script responses are raw strings, which lets you simulate
 malformed or unexpected model output as well as well-formed JSON. The helpers
 `tool_call(...)` and `final(...)` build well-formed responses.
 
+When no live model is configured, the CLI uses a small request-aware demo
+model. It recognizes directory names or IDs, common duration phrases, dates,
+morning and afternoon time ranges, then summarizes the slots returned by the
+scheduler. It is intended for local examples rather than general language
+understanding. Employees' work email addresses can be shared; phone numbers
+and home locations are withheld.
+
 You do not need a real model for this assignment, and using one earns no extra
 credit. If you want to try one anyway, `real_model.py` works with any
 OpenAI-compatible endpoint, including a local server such as Ollama:
