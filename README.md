@@ -33,7 +33,13 @@ Requires Python 3.10+.
 pip install pytest
 python -m pytest
 python main.py "Find an hour for Priya and Sam on Tuesday afternoon"
+python main.py "What is Priya's work email?"
+python main.py "What is Priya's phone number?"
 ```
+
+The test suite runs with `python -m pytest`. To ask for an employee's work
+email, pass the question in quotes as shown above. Phone number and home
+location requests receive a privacy refusal.
 
 Sample calendar data covers Monday 2 November to Wednesday 4 November 2026.
 "Today" is Monday 2 November 2026.
