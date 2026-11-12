@@ -11,9 +11,27 @@ from .slots import (
 from .store import Store
 
 
+class UnknownAttendeesError(ValueError):
+    """Raised when a scheduling request references people outside the directory."""
+
+
 def list_people(store: Store) -> list[dict]:
-    """Return everyone in the directory."""
-    return store.people
+    """Return directory fields that are approved to share."""
+    return [
+        {field: person[field] for field in ("id", "name", "email")}
+        for person in store.people
+    ]
+
+
+def get_email(store: Store, person: str) -> str:
+    """Return one employee's work email address."""
+    entry = next((entry for entry in store.people if entry["id"] == person), None)
+    if entry is None:
+        raise UnknownAttendeesError(
+            f"I couldn't find {person!r} in the employee directory. "
+            "Please check the name and try again."
+        )
+    return entry["email"]
 
 
 def get_busy_times(store: Store, person: str, date: str) -> list[dict]:
@@ -34,6 +52,15 @@ def find_free_slots(
     `earliest` and `latest` optionally narrow the search to part of the day
     (e.g. earliest="12:00" for "afternoon").
     """
+    known_people = {person["id"] for person in store.people}
+    unknown = [person for person in attendees if person not in known_people]
+    if unknown:
+        names = ", ".join(repr(person) for person in unknown)
+        raise UnknownAttendeesError(
+            f"I couldn't find {names} in the employee directory. "
+            "Please check the name and try again."
+        )
+
     calendars = []
     for person in attendees:
         busy = store.calendars.get(person, {}).get(date, [])
@@ -53,6 +80,7 @@ def find_free_slots(
 
 TOOLS = {
     "list_people": list_people,
+    "get_email": get_email,
     "get_busy_times": get_busy_times,
     "find_free_slots": find_free_slots,
 }
